@@ -126,3 +126,15 @@ func (q *MysqlQuery) Delete(newOrm bool) (int64, error) {
 	orm := beedb.New(db)
 	return orm.SetTable(q.Table).Where(q.Where).DeleteRow()
 }
+
+func (q *MysqlQuery) Update(data map[string]interface{}, newOrm bool) error {
+	db := MasterDB
+	if newOrm {
+		db = ConnectMysql(true)
+		defer db.Close()
+	}
+
+	orm := beedb.New(db)
+	_, err := orm.SetTable(q.Table).Where(q.Where).Update(data)
+	return err
+}
